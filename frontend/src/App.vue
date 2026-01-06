@@ -1,11 +1,13 @@
 <template>
-<div id="app"></div>
+  <Sidebar></Sidebar>
 
 
 </template>
 
 
 <script setup>
+import Sidebar from './components/Sidebar.vue';
+
 
 
 </script>
