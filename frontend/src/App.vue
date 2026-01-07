@@ -1,5 +1,7 @@
 <template>
-  <Sidebar></Sidebar>
+<div id="app">
+  <router-view />
+</div>
 
 
 </template>
@@ -11,6 +13,8 @@ import Sidebar from './components/Sidebar.vue';
 
 
 </script>
+
+
 
 <style scoped>
 
