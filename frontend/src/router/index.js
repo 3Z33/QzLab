@@ -1,9 +1,9 @@
-/*import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
-import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
+/*import Home from '../views/Home.vue'
+import Login from '../views/Login.vue'*/
 import Register from '../views/Register.vue'
-import Play from '../views/Play.vue'
+/*import Play from '../views/Play.vue'
 import MyQuizzes from '../views/MyQuizzes.vue'
 import Profile from '../views/Profile.vue'
 import Organizations from '../views/Organizations.vue'
@@ -13,12 +13,12 @@ import Leaderboards from '../views/Leaderboards.vue'
 import Statistics from '../views/Statistics.vue'
 import Admin from '../views/Admin.vue'
 import ThemeQuizzes from '../views/ThemeQuizzes.vue'
-import Game from '../views/Game.vue' 
+import Game from '../views/Game.vue' */
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
+    /*{
       path: '/',
       name: 'Home',
       component: Home,
@@ -29,13 +29,13 @@ const router = createRouter({
       name: 'Login',
       component: Login,
       meta: { requiresAuth: false }
-    },
+    },*/
     {
       path: '/register',
       name: 'Register',
       component: Register,
       meta: { requiresAuth: false }
-    },
+    }/*,
     {
       path: '/play',
       name: 'Play',
@@ -107,7 +107,7 @@ const router = createRouter({
       name: 'TestIcons',
       component: TestIcons,
       meta: { requiresAuth: false }
-    }
+    }*/
   ]
 })
 
