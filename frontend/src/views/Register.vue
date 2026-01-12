@@ -3,8 +3,6 @@
     <div class="card register-card">
       <h1 id="page-title">Inscription</h1>
       <p class="text-center page-description">Créez votre compte QzLab pour pouvoir accèder à toutes les fonctionnalités :</p>
-      
-      <!-- Messages d'erreur accessibles -->
       <div 
         v-if="error" 
         class="error-message" 
@@ -14,8 +12,6 @@
       >
         <span id="error-description">{{ error }}</span>
       </div>
-
-      <!-- Messages de succès accessibles -->
       <div 
         v-if="successMessage" 
         class="success-message" 
@@ -26,7 +22,7 @@
         <span id="success-description">{{ successMessage }}</span>
       </div>
       
-      <form @submit.prevent="handleRegister" class="register-form" role="form" aria-labelledby="page-title">
+      <form class="register-form" role="form" aria-labelledby="page-title" @submit.prevent="handleRegister">
         <!-- Nom d'utilisateur -->
         <div class="form-group">
           <label for="username" class="required">
@@ -35,9 +31,9 @@
           </label>
           <div class="input-wrapper">
             <input 
-              type="text" 
               id="username" 
               v-model="username" 
+              type="text" 
               required 
               :disabled="loading"
               placeholder="Votre nom d'utilisateur"
@@ -75,9 +71,9 @@
           </label>
           <div class="input-wrapper">
             <input 
-              type="email" 
               id="email" 
               v-model="email" 
+              type="email" 
               required 
               :disabled="loading"
               placeholder="votre@email.com"
@@ -115,9 +111,9 @@
           </label>
           <div class="input-wrapper">
             <input 
-              type="password" 
               id="password" 
               v-model="password" 
+              type="password" 
               required 
               :disabled="loading"
               placeholder="Créez un mot de passe sécurisé"
@@ -186,9 +182,9 @@
           </label>
           <div class="input-wrapper">
             <input 
-              type="password" 
               id="confirmPassword" 
               v-model="confirmPassword" 
+              type="password" 
               required 
               :disabled="loading"
               placeholder="Confirmez votre mot de passe"
@@ -245,8 +241,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { register } from '../services/api.js'
+import { usernameSchema, emailSchema, passwordSchema } from '../schemas/register.schema.js'
+import { registerSchema } from '../schemas/register.schema.js'; 
 
 //const authStore = useAuthStore()
 //const router = useRouter()
@@ -271,9 +269,10 @@ const confirmPasswordValid = ref(false)
 const confirmPasswordError = ref('')
 
 
+
 // Validation du nom d'utilisateur
 const validateUsername = () => {
-  const value = username.value.trim()
+  /*const value = username.value.trim()
   
   if (!value) {
     usernameValid.value = false
@@ -300,12 +299,16 @@ const validateUsername = () => {
   }
   
   usernameValid.value = true
-  usernameError.value = ''
+  usernameError.value = '' */
+
+  // === Validation avec Zod ===
+  const result = usernameSchema.safeParse(username.value)
+  usernameError.value = result.success ? '' : result.error.issues[0].message
 }
 
 // Validation de l'email
 const validateEmail = () => {
-  const value = email.value.trim()
+  /*const value = email.value.trim()
   
   if (!value) {
     emailValid.value = false
@@ -321,7 +324,12 @@ const validateEmail = () => {
   }
   
   emailValid.value = true
-  emailError.value = ''
+  emailError.value = '' */
+
+    // === Validation avec Zod ===
+
+const result = emailSchema.safeParse(email.value)
+emailError.value = result.success ? '' : result.error.issues[0].message
 }
 
 
@@ -330,7 +338,7 @@ const validateEmail = () => {
 
 // Critères de validation du mot de passe
 const passwordCriteria = ref([
-  { key: 'length', text: 'Au moins 8 caractères', valid: false },
+  { key: 'length', text: 'Entre 8 et 64 caractères', valid: false },
   { key: 'uppercase', text: 'Au moins une majuscule', valid: false },
   { key: 'number', text: 'Au moins un chiffre', valid: false },
   { key: 'special', text: 'Au moins un caractère spécial', valid: false }
@@ -347,7 +355,7 @@ const passwordStrength = ref({
 
 // Validation du mot de passe
 const validatePassword = () => {
-  const value = password.value
+  /*const value = password.value
   
   if (!value) {
     passwordValid.value = false
@@ -371,13 +379,23 @@ const validatePassword = () => {
   }
   
   passwordValid.value = true
-  passwordError.value = ''
+  passwordError.value = '' */
+
+    // === Validation avec Zod ===
+    const value = password.value
+    const result = passwordSchema.safeParse(password.value)
+    passwordError.value = result.success ? '': 'Le mot de passe ne respecte pas tous les critères'
+
+      // Mise à jour des critères
+  updatePasswordCriteria(value)
+  updatePasswordStrength(value)
+  
 }
 
 
 // Mise à jour des critères de validation
 const updatePasswordCriteria = (value) => {
-  passwordCriteria.value[0].valid = value.length >= 8
+  passwordCriteria.value[0].valid = value.length >= 8 && value.length <= 64
   passwordCriteria.value[1].valid = /[A-Z]/.test(value)
   passwordCriteria.value[2].valid = /\d/.test(value)
   passwordCriteria.value[3].valid = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value)
@@ -440,8 +458,8 @@ const validateConfirmPassword = () => {
   confirmPasswordError.value = ''
 }
 
-// Validation globale du formulaire
-const isFormValid = computed(() => {
+// Validation globale du formulaire 
+/*const isFormValid = computed(() => {
   return usernameValid.value && 
          emailValid.value && 
          passwordValid.value && 
@@ -450,10 +468,19 @@ const isFormValid = computed(() => {
          email.value.trim() &&
          password.value &&
          confirmPassword.value
-})
+}) */
 
 
+const isFormValid = computed(() => {
+  const result = registerSchema.safeParse({
+    username: username.value.trim(),
+    email: email.value.trim(),
+    password: password.value,
+    confirmPassword: confirmPassword.value,
+  });
 
+  return result.success; // Retourne true si le formulaire est valide
+});
 
 
 // Fonction de soumission du formulaire
@@ -487,16 +514,7 @@ const handleRegister = async () => {
   }
 }
 
-// Effacement des messages
-const clearMessages = () => {
-  error.value = ''
-  successMessage.value = ''
-}
 
-// Watchers pour la validation en temps réel
-watch([username, email, password, confirmPassword], () => {
-  clearMessages()
-}, { deep: true })
 
 </script>
 
