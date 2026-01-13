@@ -1,5 +1,6 @@
 :root {
   --primary-color: #00b7fd;
+  --primary-color-dark: #008eca;
   --secondary-color: #ff7a22;
   --success-color: #198754;     
   --danger-color: #c90000;
@@ -10,7 +11,7 @@
   --text-primary: #212529;       
   --text-secondary: #6c757d;     
   --border-color: #333;         
-  --border-light: #dee2e6;       
+  --border-light: #aaaaaa;       
 
   --font-primary: 'Kulim Park', Arial, sans-serif;
   --font-secondary: 'Numans', Verdana, sans-serif;
@@ -45,12 +46,10 @@ h3 {font-size: var(--font-size-h3); font-family: var(--font-secondary);}
 h4, h5, h6 {font-size: var(--font-size-h4-h5-h6); font-family: var(--font-secondary);}
 h1, h2, h3, h4, h5, h6 {line-height: 1.5rem;}
 
-
-
-
 .container {
     max-width: 1100px;      
     display: flex;
     margin: 0 auto;
     padding: 0 1rem;
 }
+

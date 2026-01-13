@@ -42,6 +42,7 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+    try {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({
@@ -58,18 +59,21 @@ const login = async (req, res) => {
         return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const token = generateToken(user.id, res);
+    const token = generateToken(user.id, res); 
 
-    res.status(201).json({
+    res.status(200).json({
         status: "success",
         data: {
             user: {
                 id: user.id,
                 email: email,
             },
-            token,
         },
     });
+} catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Internal server error" });
+}
 };
 
 const logout = async (req, res) => {

@@ -535,7 +535,7 @@ h1 {
     text-decoration: underline;
     text-underline-offset: 5px;
     text-decoration-thickness: 2px;
-    margin: 1rem 0;
+    margin: 2rem 0;
 }
 
 .register-card {
@@ -585,10 +585,9 @@ h1 {
 
 .input-wrapper input {
   width: 100%;
-  padding: 0.625rem 2.75rem 0.625rem 0.75rem;
-  border: 2px solid #e9ecef;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  padding: 0.6rem 0.6rem;
+  border: 2px solid var(--border-light);
+  font-size: 0.9rem;
   transition: all 0.3s ease;
   background-color: white;
 }
@@ -777,24 +776,18 @@ h1 {
 
 .form-actions .btn {
   width: 100%;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  min-height: 44px;
-
-
-  display: inline-block;
   padding: 0.5rem 1rem;
-  background-color: #3498db;
-  color: white;
-  text-decoration: none;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s;
+  font-weight: 600; 
+  transition: all 0.3s ease;
+  background: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+
+.form-actions .btn:hover {
+  background: var(--primary-color-dark);
 }
 
 .form-actions .btn:disabled {

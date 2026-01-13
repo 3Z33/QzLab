@@ -365,8 +365,8 @@ import Admin from '../components/IconsComponents/Admin.vue'
 }
 
 .register-btn:hover {
-  background: #0099cc;
-  border-color: #0099cc;
+  background: var(--primary-color-dark);
+  border-color: var(--primary-color-dark);
 }
 
 /* États de focus pour l'accessibilité */

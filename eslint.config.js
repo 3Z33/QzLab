@@ -20,7 +20,7 @@ export default [
         window: 'readonly',
         document: 'readonly',
         process: 'readonly',     // utile pour le backend Node
-        // fetch: 'readonly',    // décommente si besoin
+         fetch: 'readonly',   
          setTimeout: 'readonly',
       },
     },
