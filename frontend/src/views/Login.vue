@@ -57,11 +57,34 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-//import { useAuthStore } from '../stores/auth'
+import { useAuthStore } from '../store/useAuthStore'
 import { login } from '../services/api.js'
 import { useRouter, useRoute } from 'vue-router'
 
-//const authStore = useAuthStore()
+const auth = useAuthStore()
+
+
+const handleLogin = async () => {
+  if (loading.value) return
+  
+  loading.value = true
+  error.value = ''
+  
+  try {
+    await auth.login({ 
+      email: email.value,
+      password: password.value
+    })
+    router.push('/')
+  } catch (err) {
+    
+    error.value = err.message || 'Erreur lors de la connexion'
+  } finally {
+    loading.value = false
+  }
+}
+
+
 const router = useRouter()
 const route = useRoute()
 
@@ -73,7 +96,7 @@ const error = ref('')
 // Variables pour gérer l'invitation
 const isInvitation = ref(false)
 const invitationParams = ref({})
-
+/*
 const handleLogin = async () => {
   if (loading.value) return
   
@@ -87,6 +110,12 @@ const handleLogin = async () => {
     })
     
     console.log('🔍 Résultat de la connexion:', result)
+
+    if(result.status) { // result.value doit être égal à true si la connexion a réussi
+        console.log('auth.user : ', auth.user);
+        console.log('🔄 Redirection vers la page d\'accueil');
+        router.push('/');   
+    } */
     /*
     if (result.success) {
       // Si c'est une invitation, traiter l'invitation après connexion
@@ -98,18 +127,24 @@ const handleLogin = async () => {
       }
     } else {
       error.value = result.error || 'Erreur lors de la connexion'
-    } */
+    } 
   } catch (err) {
     console.error('❌ Erreur dans handleLogin:', err)
     error.value = err.message || 'Erreur lors de la connexion'
   } finally {
     loading.value = false
   }
-}
+  console.log(auth.user)
+}*/
+
+
+
 
 /**
  * Traite l'invitation après connexion
  */
+
+ /*
 const processInvitation = async () => {
   try {
     const { orgId, token } = invitationParams.value
@@ -133,7 +168,7 @@ const processInvitation = async () => {
     router.push('/organizations?error=Erreur lors de l\'acceptation de l\'invitation')
   }
 }
-
+*/
 /**
  * Initialisation du composant
  */
@@ -152,7 +187,8 @@ onMounted(() => {
       email.value = decodeURIComponent(route.query.email)
     }
   }
-})
+})  
+
 </script>
 
 <style scoped>

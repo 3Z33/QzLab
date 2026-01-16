@@ -79,7 +79,10 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
     res.cookie("jwt", "", {
         httpOnly: true,
-        expires: new Date(0)
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        expires: new Date(0),
+        path: '/',
     });
     res.status(200).json({
         status: "success",
@@ -87,4 +90,14 @@ const logout = async (req, res) => {
     });
 };
 
-export { register, login, logout };
+
+const checkAuth = async (req, res) => {
+  return res.status(200).json({
+    status: 'success',
+    data: {
+      user: req.user, 
+    },
+  });
+};
+
+export { register, login, logout, checkAuth };

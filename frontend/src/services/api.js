@@ -28,7 +28,7 @@ export const register = async ({username, email, password}) => {
 
   // Si nécessaire, traiter les données de la réponse
   const data = await response.json();
-  return response; // data;
+  return data; // data;
 };
 
 
@@ -54,12 +54,39 @@ export const login = async ({email, password}) => {
       const error = await response.json();
       errorMessage = error.error || errorMessage;
     } catch (_) {
-      
+
     }
     throw new Error(errorMessage);
   }
 
   
   const data = await response.json();
-  return response;
+  return data;
+};
+
+
+export const logout = async () => {
+  await fetch('http://localhost:3000/auth/logout', {
+    method: 'POST',
+    credentials: 'include',
+  });
+};
+
+export const checkAuth = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/auth/check', {
+      credentials: 'include', // envoie le cookie JWT
+    });
+
+    if (!response.ok) {
+      // L'utilisateur n'est pas connecté ou erreur côté serveur
+      return null;
+    }
+
+    const data = await response.json();
+    return data.data.user || null; // retourne l'utilisateur ou null
+  } catch (_) {
+    // Problème réseau ou autre
+    return null;
+  }
 };
