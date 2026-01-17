@@ -40,3 +40,5 @@ export const registerSchema = z
       path: ['confirmPassword']
     }
   )
+
+

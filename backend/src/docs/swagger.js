@@ -15,18 +15,18 @@ export const swaggerSpec = swaggerJSDoc({
       },
     ],
     components: {
-        securitySchemes: {
-            bearerAuth: {
-                type: "http",
-                scheme: "bearer",
-                bearerFormat: "JWT",
-            },
-            cookieAuth: {
-                type: "apiKey",
-                in: "cookie",
-                name: "jwt",
-            },
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
         },
+        cookieAuth: {
+          type: "apiKey",
+          in: "cookie",
+          name: "jwt",
+        },
+      },
     },
   },
   apis: ["./src/routes/*.js"],

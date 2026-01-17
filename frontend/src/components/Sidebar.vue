@@ -56,7 +56,7 @@
         </router-link>
       </div>
       
-      <button v-else @click="handleLogout" class="auth-btn logout-btn">
+      <button v-else class="auth-btn logout-btn" @click="handleLogout">
         <span class="nav-text">Déconnexion</span>
       </button>
     </div>

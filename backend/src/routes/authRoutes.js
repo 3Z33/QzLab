@@ -1,9 +1,13 @@
 import express from "express";
-import { register, login, logout, checkAuth } from "../controllers/authController.js";
+import {
+  register,
+  login,
+  logout,
+  checkAuth,
+} from "../controllers/authController.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { validate } from "../middleware/validate.js";
 import { registerSchema, loginSchema } from "../validators/authValidator.js";
-
 
 const router = express.Router();
 
@@ -109,9 +113,9 @@ router.post("/logout", logout);
  *         description: utilisateur authentifié ( token valide )
  *       401:
  *         description: Non autorisé (token manquant, invalide/expiré, ou utilisateur inexistant)
- *       
+ *
  */
 
-router.get('/check', requireAuth, checkAuth);
+router.get("/check", requireAuth, checkAuth);
 
 export default router;

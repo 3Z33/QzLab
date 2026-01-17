@@ -75,7 +75,12 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value
     })
+
+    await auth.checkAuth();
+
     router.push('/')
+      
+    
   } catch (err) {
     
     error.value = err.message || 'Erreur lors de la connexion'
