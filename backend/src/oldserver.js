@@ -1,17 +1,33 @@
+/*import express from "express";
 import { config } from "dotenv";
 import { connectDB, disconnectDB } from "./config/db.js";
-import app from "./app.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+import authRoutes from "./routes/authRoutes.js";
 
 config();
 connectDB();
 
-const PORT = process.env.PORT;
+const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
+
+app.use("/auth", authRoutes);
+
+const PORT = process.env.PORT;
 
 const server = app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
 }); 
-
 
 // 3 cas majeur a traiter en cas de problemes de connection de la DB
 
@@ -38,4 +54,4 @@ process.on("SIGTERM", async () => {
         await disconnectDB();
         process.exit(0);
     });
-});
+});  */

@@ -15,7 +15,7 @@ import Sidebar from './components/Sidebar.vue';
 import { useAuthStore } from './store/useAuthStore';
 import { onMounted } from 'vue';
 
-const authStore = useAuthStore();
+const authStore = useAuthStore(); 
 
 onMounted(() => {
   authStore.checkAuth(); 
