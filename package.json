@@ -3,13 +3,32 @@
   "version": "1.0.0",
   "description": "application de Quiz en Vue.js/Express.js",
   "main": "index.js",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend":  "cd backend && npm run dev",
+    "dev":         "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "lint":         "eslint .",
+    "lint:fix":     "eslint . --fix",
+    "lint:frontend": "eslint frontend",
+    "lint:backend":  "eslint backend",
+    "format":        "prettier --write"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^9.39.2",
+    "eslint-plugin-vue": "^10.6.2",
+    "prettier": "^3.7.4"
+  },
+  "dependencies": {
+    "zod": "^4.3.5"
   }
 }

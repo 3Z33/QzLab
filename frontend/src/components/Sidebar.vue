@@ -47,7 +47,7 @@
     </nav>
     
     <div class="side-panel-footer">
-      <div v-if="!isLoggedIn" class="auth-buttons">
+      <div v-if="!authStore.user" class="auth-buttons">
         <router-link to="/login" class="auth-btn login-btn">
           <span class="nav-text">Connexion</span>
         </router-link>
@@ -56,7 +56,7 @@
         </router-link>
       </div>
       
-      <button v-else @click="handleLogout" class="logout-btn">
+      <button v-else class="auth-btn logout-btn" @click="handleLogout">
         <span class="nav-text">Déconnexion</span>
       </button>
     </div>
@@ -72,6 +72,14 @@ import Organizations from '../components/IconsComponents/Organizations.vue'
 import Ranking from '../components/IconsComponents/Ranking.vue'
 import Statistics from '../components/IconsComponents/Statistics.vue'
 import Admin from '../components/IconsComponents/Admin.vue'
+
+import { useAuthStore } from '../store/useAuthStore';
+
+const authStore = useAuthStore();
+
+const handleLogout = async () => {
+  await authStore.logout();
+};
 
 </script>
 
@@ -218,34 +226,27 @@ import Admin from '../components/IconsComponents/Admin.vue'
 }
 
 .logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  width: 100%;
-  padding: 0.875rem 1.5rem;
-  background: none;
-  border: none;
-  color: #999;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: inherit;
-  font-size: 0.9rem;
-  border-left: 3px solid transparent;
+  margin: auto;
+  color: #fff;
+  background: var(--danger-color-dark);
+  border: 1px solid var(--danger-color-dark);
+  transition: all 0.3s ease;
+  width: 85%;
 }
 
 .logout-btn:hover {
   color: #ffffff;
-  background: rgba(255, 0, 0, 0.1);
-  border-left-color: #ff4444;
-  transform: translateX(4px);
+  
+  border: 1px solid var(--danger-color);
+  background-color: var(--danger-color);
 }
 
-.logout-btn .nav-icon {
+.nav-icon {
   filter: grayscale(1);
   transition: filter 0.2s ease;
 }
 
-.logout-btn:hover .nav-icon {
+.nav-icon {
   filter: grayscale(0);
 }
 
@@ -340,13 +341,11 @@ import Admin from '../components/IconsComponents/Admin.vue'
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1rem;
-  border: none;
   text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
-
+/*
 .login-btn {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
@@ -357,16 +356,16 @@ import Admin from '../components/IconsComponents/Admin.vue'
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.3);
 }
-
-.register-btn {
+*/
+.login-btn, .register-btn {
   background: var(--primary-color);
   color: #ffffff;
   border: 1px solid var(--primary-color);
 }
 
-.register-btn:hover {
-  background: #0099cc;
-  border-color: #0099cc;
+.login-btn:hover, .register-btn:hover {
+  background: var(--primary-color-dark);
+  border-color: var(--primary-color-dark);
 }
 
 /* États de focus pour l'accessibilité */

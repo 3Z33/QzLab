@@ -1,15 +1,25 @@
 <template>
-<div id="app">
-  <router-view />
+<div class="app-layout">
+  <Sidebar />
+    <main class="content">
+        <router-view />
+    </main>
+
+
 </div>
-
-
 </template>
 
 
 <script setup>
 import Sidebar from './components/Sidebar.vue';
+import { useAuthStore } from './store/useAuthStore';
+import { onMounted } from 'vue';
 
+const authStore = useAuthStore(); 
+
+onMounted(() => {
+  authStore.checkAuth(); 
+});
 
 
 </script>
@@ -17,6 +27,13 @@ import Sidebar from './components/Sidebar.vue';
 
 
 <style scoped>
+.app-layout {
+  min-height: 100vh;
+}
 
+.content {
+ margin-left: 280px; /* Width of the sidebar */
+
+}
 
 </style>
