@@ -24,7 +24,7 @@ export const registerSchema = z.object({
     })
     .min(8, "Password must be at least 8 characters")
     .max(100, "Password is too long"),
-});
+}).strict();
 
 export const loginSchema = z.object({
   email: z
@@ -40,4 +40,4 @@ export const loginSchema = z.object({
       invalid_type_error: "Password must be a string",
     })
     .min(1, "Password is required"),
-});
+}).strict();
