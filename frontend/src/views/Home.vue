@@ -1,7 +1,7 @@
 <template>
-    <div class="home-view">
-        <h1>Bienvenue sur QzLab {{ user }}</h1>
-        <p>Votre plateforme de quiz en ligne.</p>
+     <div class="home-view"> 
+       <!-- <h1>Bienvenue sur QzLab {{ user }}</h1>
+        <p>Votre plateforme de quiz en ligne.</p>-->
     </div>
 </template>
 

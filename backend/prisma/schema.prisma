@@ -14,19 +14,316 @@ datasource db {
 }
 
 
+
+
+
+enum OrganizationType { 
+  ENTREPRISE
+  ASSOCIATION
+  ECOLE_UNIVERSITE
+  CLUB
+  AUTRE
+}
+
+enum QuizDifficulty {
+  FACILE
+  MOYEN 
+  DIFFICILE
+}
+
+enum QuizRoomStatus {
+  OUVERT
+  FERME
+}
+
 model User {
-  id         Int       @id @default(autoincrement())
-  username   String    @unique
-  email      String    @unique
-  password   String
+  id        Int     @id @default(autoincrement())
+  username  String  @unique @db.VarChar(30)
+  email     String  @unique @db.VarChar(191)
+  password  String  @db.VarChar(255)
 
-  isAdmin    Boolean   @default(false)
-  avatar     String?
-  isActive   Boolean   @default(true)
+  isAdmin   Boolean @default(false) @map("is_admin")
+  profileImage String? @db.VarChar(255) @map("profile_image")
+  isActive  Boolean @default(true)  @map("is_active")
 
-  lastLogin  DateTime?
-  updatedAt  DateTime? @updatedAt
-  createdAt  DateTime  @default(now())
+  lastLogin DateTime? @map("last_login") @db.Timestamp(0) 
+  updatedAt DateTime? @map("updated_at") @db.Timestamp(0)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+
+  organizationsCreated Organization[]        @relation("OrganizationCreatedBy")
+  badgesCreated        Badge[]               @relation("BadgeCreatedBy")
+  icebreakersCreated   Icebreaker[]          @relation("IcebreakerCreatedBy")
+  orgMessages          OrganizationMessage[] @relation("OrgMessageByUser")
+  quizzesCreated       Quiz[]                @relation("QuizCreatedBy")
+  quizRoomsCreated     QuizRoom[]            @relation("QuizRoomCreatedBy")
+  servicesCreated      Service[]             @relation("ServiceCreatedBy")
+  teamsCreated         Team[]                @relation("TeamCreatedBy")
+
+  userBadges            UserBadge[]
+  userTeams             UserTeam[]
+  userOrganizationRoles UserOrganizationRole[]
 
   @@map("users")
+}
+
+model Organization {
+  id               Int              @id @default(autoincrement())
+  name             String           @db.VarChar(255)
+  description      String?
+  logo             String?          @db.VarChar(255)
+  organizationType OrganizationType @map("organization_type")
+  maxMembers       Int?             @map("max_members")
+
+  createdById Int?     @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  createdBy   User? @relation("OrganizationCreatedBy", fields: [createdById], references: [id])
+
+  badges      Badge[]
+  icebreakers Icebreaker[]
+  messages    OrganizationMessage[]
+  services    Service[]
+  teams       Team[]
+  quizzes     Quiz[]
+  quizRooms   QuizRoom[]
+
+  userOrganizationRoles UserOrganizationRole[]
+
+  @@index([createdById])
+  @@map("organization")
+}
+
+model Quiz {
+  id                 Int            @id @default(autoincrement())
+  title              String         @db.VarChar(255)
+  category           String?        @db.VarChar(255)
+  difficulty         QuizDifficulty @default(FACILE)
+  description        String?        @db.VarChar(255)
+  secondsPerQuestion Int?           @map("seconds_per_question")
+
+  organizationId Int?     @map("organization_id")
+  isScheduled    Boolean  @default(false) @map("is_scheduled")
+  scheduledAt    DateTime? @map("scheduled_at") @db.Timestamp(0)
+
+  createdById Int?     @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  createdBy    User?         @relation("QuizCreatedBy", fields: [createdById], references: [id])
+
+  questions Question[]
+  quizRooms  QuizRoom[]
+
+  @@index([organizationId])
+  @@index([createdById])
+  @@map("quiz")
+}
+
+model Question {
+  id     Int    @id @default(autoincrement())
+  quizId Int?   @map("quiz_id")
+  text   String @db.VarChar(255)
+
+  quiz    Quiz?    @relation(fields: [quizId], references: [id])
+  answers Answer[]
+
+  @@index([quizId])
+  @@map("question")
+}
+
+model Answer {
+  id         Int     @id @default(autoincrement())
+  questionId Int?    @map("question_id")
+  text       String
+  isCorrect  Boolean @map("is_correct")
+
+  question Question? @relation(fields: [questionId], references: [id]) 
+
+  @@index([questionId])
+  @@map("answer")
+}
+
+model Badge {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  description    String?
+  icon           String?  @db.VarChar(255)
+
+  organizationId Int   @map("organization_id")
+  createdById    Int?  @map("created_by") 
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  createdBy    User?        @relation("BadgeCreatedBy", fields: [createdById], references: [id])
+
+  userBadges UserBadge[]
+
+  @@index([organizationId])
+  @@index([createdById])
+  @@map("badge")
+}
+
+model Icebreaker {
+  id             Int      @id @default(autoincrement())
+  organizationId Int      @map("organization_id")
+  content        String
+  createdById    Int?     @map("created_by")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  createdBy    User?        @relation("IcebreakerCreatedBy", fields: [createdById], references: [id])
+
+  @@index([organizationId])
+  @@index([createdById])
+  @@map("icebreaker")
+}
+
+model OrganizationMessage {
+  id             Int      @id @default(autoincrement())
+  organizationId Int      @map("organization_id")
+  userId         Int?     @map("user_id")
+  content        String
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user         User?        @relation("OrgMessageByUser", fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([userId])
+  @@map("organization_message")
+}
+
+model QuizRoom {
+  id             Int            @id @default(autoincrement())
+  organizationId Int            @map("organization_id")
+  quizId          Int?          @map("quiz_id")
+  status         QuizRoomStatus @default(OUVERT)
+
+  createdById Int?     @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  quiz         Quiz?        @relation(fields: [quizId], references: [id])
+  createdBy    User?        @relation("QuizRoomCreatedBy", fields: [createdById], references: [id])
+
+  @@index([organizationId])
+  @@index([quizId])
+  @@index([createdById])
+  @@map("quiz_room")
+}
+
+model Service {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  description    String?
+  organizationId Int      @map("organization_id")
+
+  createdById Int?     @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  createdBy    User?        @relation("ServiceCreatedBy", fields: [createdById], references: [id])
+
+  teams Team[]
+
+  @@index([organizationId])
+  @@index([createdById])
+  @@map("service")
+}
+
+model Team {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  description    String?
+  organizationId Int      @map("organization_id")
+  serviceId      Int?     @map("service_id")
+
+  createdById Int?     @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  isDefault Boolean @default(false) @map("is_default")
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  service      Service?     @relation(fields: [serviceId], references: [id])
+  createdBy    User?        @relation("TeamCreatedBy", fields: [createdById], references: [id])
+
+  userTeams UserTeam[]
+
+  @@index([organizationId])
+  @@index([serviceId])
+  @@index([createdById])
+  @@map("team")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(191)
+
+  rolePermissions       RolePermission[]
+  userOrganizationRoles UserOrganizationRole[]
+
+  @@map("role")
+}
+
+model Permission {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(191)
+
+  rolePermissions RolePermission[]
+
+  @@map("permission")
+}       
+
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permission")
+}
+
+model UserBadge {
+  userId     Int      @map("user_id")
+  badgeId    Int      @map("badge_id")
+  assignedAt DateTime @default(now()) @map("assigned_at") @db.Timestamp(0)
+
+  user  User  @relation(fields: [userId], references: [id])
+  badge Badge @relation(fields: [badgeId], references: [id])
+
+  @@id([userId, badgeId])
+  @@index([badgeId])
+  @@map("user_badge")
+}
+
+model UserTeam {
+  userId   Int      @map("user_id")
+  teamId   Int      @map("team_id")
+  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamp(0)
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@id([userId, teamId])
+  @@index([teamId])
+  @@map("user_team")
+}
+
+model UserOrganizationRole {
+  userId         Int      @map("user_id")
+  organizationId Int      @map("organization_id")
+  roleId         Int      @map("role_id")
+  joinedAt       DateTime @default(now()) @map("joined_at") @db.Timestamp(0)
+
+  user         User         @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  role         Role         @relation(fields: [roleId], references: [id])
+
+  @@id([userId, organizationId, roleId])
+  @@index([organizationId])
+  @@index([roleId])
+  @@map("user_organization_role")
 }
