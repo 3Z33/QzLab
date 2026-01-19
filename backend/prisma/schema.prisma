@@ -41,7 +41,7 @@ model User {
   username  String  @unique @db.VarChar(30)
   email     String  @unique @db.VarChar(191)
   password  String  @db.VarChar(255)
-
+  totalExp Int @default(0) @map("total_exp")
   isAdmin   Boolean @default(false) @map("is_admin")
   profileImage String? @db.VarChar(255) @map("profile_image")
   isActive  Boolean @default(true)  @map("is_active")
@@ -77,7 +77,7 @@ model Organization {
   createdById Int?     @map("created_by")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  createdBy   User? @relation("OrganizationCreatedBy", fields: [createdById], references: [id])
+  createdBy   User? @relation("OrganizationCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)      
 
   badges      Badge[]
   icebreakers Icebreaker[]
@@ -108,8 +108,8 @@ model Quiz {
   createdById Int?     @map("created_by")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  organization Organization? @relation(fields: [organizationId], references: [id])
-  createdBy    User?         @relation("QuizCreatedBy", fields: [createdById], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User?         @relation("QuizCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   questions Question[]
   quizRooms  QuizRoom[]
@@ -124,7 +124,7 @@ model Question {
   quizId Int?   @map("quiz_id")
   text   String @db.VarChar(255)
 
-  quiz    Quiz?    @relation(fields: [quizId], references: [id])
+  quiz    Quiz?    @relation(fields: [quizId], references: [id], onDelete: Cascade)
   answers Answer[]
 
   @@index([quizId])
@@ -137,7 +137,7 @@ model Answer {
   text       String
   isCorrect  Boolean @map("is_correct")
 
-  question Question? @relation(fields: [questionId], references: [id]) 
+  question Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
   @@map("answer")
@@ -153,8 +153,8 @@ model Badge {
   createdById    Int?  @map("created_by") 
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  createdBy    User?        @relation("BadgeCreatedBy", fields: [createdById], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("BadgeCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   userBadges UserBadge[]
 
@@ -170,8 +170,8 @@ model Icebreaker {
   createdById    Int?     @map("created_by")
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  createdBy    User?        @relation("IcebreakerCreatedBy", fields: [createdById], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("IcebreakerCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
   @@index([createdById])
@@ -185,8 +185,8 @@ model OrganizationMessage {
   content        String
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  user         User?        @relation("OrgMessageByUser", fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?        @relation("OrgMessageByUser", fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
   @@index([userId])
@@ -202,9 +202,9 @@ model QuizRoom {
   createdById Int?     @map("created_by")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  quiz         Quiz?        @relation(fields: [quizId], references: [id])
-  createdBy    User?        @relation("QuizRoomCreatedBy", fields: [createdById], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  quiz         Quiz?        @relation(fields: [quizId], references: [id], onDelete: SetNull)
+  createdBy    User?        @relation("QuizRoomCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
   @@index([quizId])
@@ -221,8 +221,8 @@ model Service {
   createdById Int?     @map("created_by")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  createdBy    User?        @relation("ServiceCreatedBy", fields: [createdById], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("ServiceCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   teams Team[]
 
@@ -243,9 +243,9 @@ model Team {
 
   isDefault Boolean @default(false) @map("is_default")
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  service      Service?     @relation(fields: [serviceId], references: [id])
-  createdBy    User?        @relation("TeamCreatedBy", fields: [createdById], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  service      Service?     @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  createdBy    User?        @relation("TeamCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   userTeams UserTeam[]
 
@@ -278,8 +278,8 @@ model RolePermission {
   roleId       Int @map("role_id")
   permissionId Int @map("permission_id")
 
-  role       Role       @relation(fields: [roleId], references: [id])
-  permission Permission @relation(fields: [permissionId], references: [id])
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@id([roleId, permissionId])
   @@index([permissionId])
@@ -291,8 +291,8 @@ model UserBadge {
   badgeId    Int      @map("badge_id")
   assignedAt DateTime @default(now()) @map("assigned_at") @db.Timestamp(0)
 
-  user  User  @relation(fields: [userId], references: [id])
-  badge Badge @relation(fields: [badgeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
 
   @@id([userId, badgeId])
   @@index([badgeId])
@@ -304,8 +304,8 @@ model UserTeam {
   teamId   Int      @map("team_id")
   joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamp(0)
 
-  user User @relation(fields: [userId], references: [id])
-  team Team @relation(fields: [teamId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@id([userId, teamId])
   @@index([teamId])
@@ -318,9 +318,9 @@ model UserOrganizationRole {
   roleId         Int      @map("role_id")
   joinedAt       DateTime @default(now()) @map("joined_at") @db.Timestamp(0)
 
-  user         User         @relation(fields: [userId], references: [id])
-  organization Organization @relation(fields: [organizationId], references: [id])
-  role         Role         @relation(fields: [roleId], references: [id])
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role         Role         @relation(fields: [roleId], references: [id], onDelete: Restrict)
 
   @@id([userId, organizationId, roleId])
   @@index([organizationId])

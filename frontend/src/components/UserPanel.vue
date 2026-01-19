@@ -30,10 +30,16 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import parameterIcon from '../assets/images/icons/parameter.svg';
+import { useAuthStore } from '../store/useAuthStore';
 
-const username = ref("JohnDoe");
+const authStore = useAuthStore();
+
+const username = computed(() => authStore.user ? authStore.user.username : 'Invité');
+
+
+
 const userLevel = ref(5);
 const expPoints = ref(1200);
 const nextLevel = ref(10000);

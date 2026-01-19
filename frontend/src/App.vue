@@ -2,7 +2,6 @@
 <div class="app-layout">
   <Sidebar />
   <main class="content">
-      <UserPanel />
       <router-view />
     </main>
 
@@ -13,7 +12,6 @@
 
 <script setup>
 import Sidebar from './components/Sidebar.vue';
-import UserPanel from './components/userPanel.vue';
 import { useAuthStore } from './store/useAuthStore';
 import { onMounted } from 'vue';
 

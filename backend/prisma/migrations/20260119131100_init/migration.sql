@@ -1,30 +1,20 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `users` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(30) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `is_admin` BOOLEAN NOT NULL DEFAULT false,
+    `profile_image` VARCHAR(255) NULL,
+    `is_active` BOOLEAN NOT NULL DEFAULT true,
+    `last_login` TIMESTAMP(0) NULL,
+    `updated_at` TIMESTAMP(0) NULL,
+    `created_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
-  - You are about to drop the column `avatar` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `createdAt` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `isActive` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `isAdmin` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `lastLogin` on the `users` table. All the data in the column will be lost.
-  - You are about to drop the column `updatedAt` on the `users` table. All the data in the column will be lost.
-  - You are about to alter the column `username` on the `users` table. The data in that column could be lost. The data in that column will be cast from `VarChar(191)` to `VarChar(30)`.
-
-*/
--- AlterTable
-ALTER TABLE `users` DROP COLUMN `avatar`,
-    DROP COLUMN `createdAt`,
-    DROP COLUMN `isActive`,
-    DROP COLUMN `isAdmin`,
-    DROP COLUMN `lastLogin`,
-    DROP COLUMN `updatedAt`,
-    ADD COLUMN `created_at` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-    ADD COLUMN `is_active` BOOLEAN NOT NULL DEFAULT true,
-    ADD COLUMN `is_admin` BOOLEAN NOT NULL DEFAULT false,
-    ADD COLUMN `last_login` TIMESTAMP(0) NULL,
-    ADD COLUMN `profile_image` VARCHAR(255) NULL,
-    ADD COLUMN `updated_at` TIMESTAMP(0) NULL,
-    MODIFY `password` VARCHAR(255) NOT NULL,
-    MODIFY `username` VARCHAR(30) NOT NULL;
+    UNIQUE INDEX `users_username_key`(`username`),
+    UNIQUE INDEX `users_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `organization` (

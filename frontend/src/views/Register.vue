@@ -246,8 +246,10 @@ import { register } from '../services/api.js'
 import { usernameSchema, emailSchema, passwordSchema } from '../schemas/register.schema.js'
 import { registerSchema } from '../schemas/register.schema.js'; 
 
+import { useRouter } from 'vue-router'
+
 //const authStore = useAuthStore()
-//const router = useRouter()
+const router = useRouter()
 
 // Variables réactives
 const username = ref('')
