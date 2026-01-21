@@ -3,6 +3,7 @@
   <Sidebar />
   <main class="content">
       <router-view />
+      <QuizCard />
     </main>
 
 
@@ -11,6 +12,7 @@
 
 
 <script setup>
+import QuizCard from './components/QuizCard.vue';
 import Sidebar from './components/Sidebar.vue';
 import { useAuthStore } from './store/useAuthStore';
 import { onMounted } from 'vue';

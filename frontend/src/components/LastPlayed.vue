@@ -145,7 +145,7 @@ border-left: none;
   text-align: center;
   padding: 0.75rem 1rem;
   width: 100%;
-  background-color: var(--secondary-color);
+  background-color: var(--success-color);
   color: white;
   text-decoration: none;
   font-weight: 600;
