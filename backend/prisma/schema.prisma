@@ -18,23 +18,32 @@ datasource db {
 
 
 enum OrganizationType { 
-  ENTREPRISE
+  ENTERPRISE
   ASSOCIATION
-  ECOLE_UNIVERSITE
+  SCHOOL
   CLUB
-  AUTRE
+  OTHER
 }
 
 enum QuizDifficulty {
-  FACILE
-  MOYEN 
-  DIFFICILE
+  EASY
+  MEDIUM 
+  HARD
 }
 
 enum QuizRoomStatus {
-  OUVERT
-  FERME
+  OPEN
+  CLOSED
 }
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  ORDERING
+  INTRUDER
+  ASSOCIATION
+  BLIND_TEST
+}
+
 
 model User {
   id        Int     @id @default(autoincrement())
@@ -93,14 +102,24 @@ model Organization {
   @@map("organization")
 }
 
+model Theme {
+  id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar(100)
+
+  quizzes Quiz[]
+
+  @@map("theme")
+}
+
+
 model Quiz {
   id                 Int            @id @default(autoincrement())
   title              String         @db.VarChar(255)
-  category           String?        @db.VarChar(255)
-  difficulty         QuizDifficulty @default(FACILE)
+  difficulty         QuizDifficulty @default(EASY)
   description        String?        @db.VarChar(255)
   secondsPerQuestion Int?           @map("seconds_per_question")
 
+  themeId       Int? @map("theme_id") 
   organizationId Int?     @map("organization_id")
   isScheduled    Boolean  @default(false) @map("is_scheduled")
   scheduledAt    DateTime? @map("scheduled_at") @db.Timestamp(0)
@@ -110,22 +129,26 @@ model Quiz {
 
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdBy    User?         @relation("QuizCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  theme   Theme? @relation(fields: [themeId], references: [id], onDelete: SetNull)
 
   questions Question[]
   quizRooms  QuizRoom[]
 
   @@index([organizationId])
   @@index([createdById])
+  @@index([themeId]) 
   @@map("quiz")
 }
 
 model Question {
   id     Int    @id @default(autoincrement())
   quizId Int?   @map("quiz_id")
+  type   QuestionType @default(MULTIPLE_CHOICE)
   text   String @db.VarChar(255)
 
   quiz    Quiz?    @relation(fields: [quizId], references: [id], onDelete: Cascade)
   answers Answer[]
+  pairs   AnswerPair[]
 
   @@index([quizId])
   @@map("question")
@@ -133,15 +156,33 @@ model Question {
 
 model Answer {
   id         Int     @id @default(autoincrement())
-  questionId Int?    @map("question_id")
+  questionId Int    @map("question_id") 
   text       String
   isCorrect  Boolean @map("is_correct")
 
-  question Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  orderIndex Int?     @map("order_index")
+
+  question Question? @relation(fields: [questionId], references: [id], onDelete: Cascade) 
 
   @@index([questionId])
+  @@unique([questionId, orderIndex])
   @@map("answer")
 }
+
+model AnswerPair {
+  id         Int    @id @default(autoincrement())
+  questionId Int    @map("question_id")
+
+  leftElement  String @map("left_element")  @db.VarChar(120)
+  rightElement String @map("right_element") @db.VarChar(120)
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@unique([questionId, leftElement, rightElement])
+  @@map("answer_pair")
+}
+
 
 model Badge {
   id             Int      @id @default(autoincrement())
@@ -197,7 +238,7 @@ model QuizRoom {
   id             Int            @id @default(autoincrement())
   organizationId Int            @map("organization_id")
   quizId          Int?          @map("quiz_id")
-  status         QuizRoomStatus @default(OUVERT)
+  status         QuizRoomStatus @default(OPEN)
 
   createdById Int?     @map("created_by")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(0)
@@ -322,7 +363,7 @@ model UserOrganizationRole {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   role         Role         @relation(fields: [roleId], references: [id], onDelete: Restrict)
 
-  @@id([userId, organizationId, roleId])
+  @@unique([userId, organizationId])
   @@index([organizationId])
   @@index([roleId])
   @@map("user_organization_role")

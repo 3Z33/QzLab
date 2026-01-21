@@ -1,6 +1,7 @@
 <template>
      <div class="home-view"> 
       <UserPanel />
+      <LastPlayed />
     </div>
 </template>
 
@@ -10,6 +11,7 @@
     
     import { useAuthStore } from '../store/useAuthStore';
 import UserPanel from '../components/UserPanel.vue';
+import LastPlayed from '../components/LastPlayed.vue';
 
     const authStore = useAuthStore();
 

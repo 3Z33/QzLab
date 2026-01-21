@@ -85,8 +85,6 @@ const handleLogout = async () => {
 };
 
 
-// test resposive sidebar
-
 import { ref } from 'vue';
 
 const isSidebarOpen = ref(false);
