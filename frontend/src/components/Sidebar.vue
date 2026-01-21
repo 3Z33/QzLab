@@ -1,5 +1,8 @@
 <template>
-<aside class="side-panel">
+<aside class="side-panel" :class="{ open: isSidebarOpen}">
+  <button class="side-panel-tab" @click="isSidebarOpen = !isSidebarOpen" :aria-expanded="isSidebarOpen">
+    Menu
+  </button>
     <div class="side-panel-header">
       <img src="../assets/images/logo/QzLab.png" alt="QzLab" class="logo">
     </div>
@@ -81,6 +84,12 @@ const handleLogout = async () => {
   await authStore.logout();
 };
 
+
+import { ref } from 'vue';
+
+const isSidebarOpen = ref(false);
+
+
 </script>
 
 <style scoped>
@@ -111,7 +120,6 @@ const handleLogout = async () => {
 
 .logo {
   width: 70%;
-  object-fit: contain;
 }
 
 .logo::after {
@@ -250,72 +258,10 @@ const handleLogout = async () => {
   filter: grayscale(0);
 }
 
-/* Scrollbar personnalisée 
-.side-nav::-webkit-scrollbar {
-  width: 6px;
-}
 
-.side-nav::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.side-nav::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-}
-
-.side-nav::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
-}*/
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .side-panel {
-    width: 260px;
-  }
-  
-  .side-panel-header {
-    padding: 1.5rem 1.25rem;
-  }
-  
-  .logo {
-    font-size: 1.6rem;
-  }
-  
-  .nav-item {
-    padding: 0.75rem 1.25rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .side-panel {
-    width: 240px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-  
-  .side-panel.open {
-    transform: translateX(0);
-  }
-  
-  .nav-item {
-    padding: 0.875rem 1rem;
-  }
-  
-  .side-panel-header {
-    padding: 1.25rem 1rem;
-  }
-  
-  .logo {
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-  }
-}
-
-/* Animation d'entrée */
 .side-panel {
-  animation: slideInLeft 0.4s ease-out;
-}
+  animation: slideInLeft 0.3s ease-out;
+} 
 
 @keyframes slideInLeft {
   from {
@@ -328,7 +274,6 @@ const handleLogout = async () => {
   }
 }
 
-/* Styles pour les boutons d'authentification */
 .auth-buttons {
   display: flex;
   flex-direction: column;
@@ -345,18 +290,7 @@ const handleLogout = async () => {
   transition: all 0.3s ease;
   cursor: pointer;
 }
-/*
-.login-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
 
-.login-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-*/
 .login-btn, .register-btn {
   background: var(--primary-color);
   color: #ffffff;
@@ -408,4 +342,47 @@ const handleLogout = async () => {
     transform: translateY(-50%) scale(1.2);
   }
 }
+
+
+/* responsive sidebar toggle button (optional) */ 
+
+.side-panel-tab {
+  display: none;
+  
+}
+
+@media (max-width: 1024px) {
+  .side-panel {
+    width: 280px;
+    transform: translateX(calc(-100%)); /* laisse la languette visible */
+    transition: transform 0.3s ease;
+    animation: none; /* évite que l’anim force le panneau à s’ouvrir */
+  }
+
+  .side-panel.open {
+    transform: translateX(0);
+  }
+
+  .side-panel-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: -56px;
+    top: 50px;
+    width: 55px;
+    height: 200px;
+    background: var(--dark-bg);
+    color: #fff;
+    border: 1px solid var(--dark-border);
+    border-left: none;
+    border-radius: 0 40px 40px 0;
+    cursor: pointer;
+    writing-mode: vertical-rl;
+    text-orientation: mixed; 
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+}
+
 </style>

@@ -12,6 +12,8 @@
   --text-secondary: #6c757d;     
   --border-color: #333;         
   --border-light: #aaaaaa;       
+  --box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+  --box-shadow-selected: 0px 0px 15px 0px var(--primary-color); 
 
   --font-primary: 'Kulim Park', Arial, sans-serif;
   --font-secondary: 'Numans', Verdana, sans-serif;
@@ -21,6 +23,11 @@
   --font-size-h2: 2rem;
   --font-size-h3: 1.5rem;
   --font-size-h4-h5-h6: 1.2rem;
+
+  --smartphone-device: 480px;
+  --tablet-device: 768px;
+  --laptop-device: 1024px;
+  --desktop-device: 1200px;
  
 }
 

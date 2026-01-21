@@ -1,8 +1,9 @@
 <template>
 <div class="app-layout">
   <Sidebar />
-    <main class="content">
-        <router-view />
+  <main class="content">
+      <router-view />
+      <QuizCard />
     </main>
 
 
@@ -11,9 +12,11 @@
 
 
 <script setup>
+import QuizCard from './components/QuizCard.vue';
 import Sidebar from './components/Sidebar.vue';
 import { useAuthStore } from './store/useAuthStore';
 import { onMounted } from 'vue';
+
 
 const authStore = useAuthStore(); 
 
@@ -30,10 +33,16 @@ onMounted(() => {
 .app-layout {
   min-height: 100vh;
 }
-
 .content {
- margin-left: 280px; /* Width of the sidebar */
+  margin-left: 280px; /* Width of the sidebar */
 
+  }
+@media (max-width: 1024px) {
+  .content {
+  margin-left: 0px; /* Width of the sidebar */
+
+  }
 }
+
 
 </style>

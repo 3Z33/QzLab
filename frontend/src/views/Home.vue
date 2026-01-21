@@ -1,7 +1,8 @@
 <template>
-    <div class="home-view">
-        <h1>Bienvenue sur QzLab {{ user }}</h1>
-        <p>Votre plateforme de quiz en ligne.</p>
+     <div class="home-view"> 
+      <UserPanel />
+      <LastPlayed />
+      <QuizCard />
     </div>
 </template>
 
@@ -10,6 +11,9 @@
     import { watch } from 'vue'
     
     import { useAuthStore } from '../store/useAuthStore';
+import UserPanel from '../components/UserPanel.vue';
+import LastPlayed from '../components/LastPlayed.vue';
+import QuizCard from '../components/QuizCard.vue';
 
     const authStore = useAuthStore();
 
